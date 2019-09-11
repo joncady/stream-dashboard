@@ -1,25 +1,50 @@
 {
-  "name": "electron-with-create-react-app",
+  "name": "stream-dashboard",
+  "author": "Jonathan Cady",
   "version": "0.1.0",
   "private": true,
+  "description": "Smart dashboard for Twitch streaming.",
   "devDependencies": {
-    "electron": "^1.4.14",
+    "electron": "^1.8.8",
+    "electron-builder": "^20.39.0",
     "foreman": "^2.0.0",
     "react-scripts": "0.8.5"
   },
+  "build": {
+    "appId": "com.sts.stream-dashboard",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ]
+  },
   "dependencies": {
+    "bootstrap": "^4.3.1",
+    "electron-settings": "^3.2.0",
+    "express": "^4.17.1",
+    "graphql-request": "^1.8.2",
     "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "react-tabs": "^3.0.0",
+    "react-twitch-embed-video": "^1.0.1",
+    "reactstrap": "^7.1.0",
+    "request": "^2.88.0",
+    "smashgg.js": "^4.0.1",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0"
   },
   "homepage": "./",
-  "main": "src/electron-starter.js",
+  "main": "public/electron.js",
   "scripts": {
-    "start": "nf start -p 3000",
+    "electron-pack": "build -c.extraMetadata.main=build/electron.js",
+    "preelectron-pack": "yarn build",
+    "start": "nf start -p 3020",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "electron": "electron .",
     "electron-start": "node src/electron-wait-react",
-    "react-start": "react-scripts start"
+    "react-start": "react-scripts start",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   }
 }

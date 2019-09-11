@@ -1,0 +1,87 @@
+@font-face {
+	src: url("assets/Integral.otf");
+	font-family: 'Integral';
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Integral';
+}
+
+#overlay {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    /* border: 5px black solid; */
+    margin: 0;
+    background-image: url("./assets/overlay.png");
+    background-size: 100% 100%;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+div {
+    color: white;
+    text-align: center;
+    position: absolute;
+}
+
+#player1 {
+    width: 160px;
+    height: 25px;
+    top: 1005px;
+    left: 548px;
+}
+
+#player2 {
+    width: 160px;
+    height: 25px;
+    top: 1005px;
+    left: 1295px;
+}
+
+#score1 {
+    top: 1002px;
+    left: 718px;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+}
+
+#score2 {
+    top: 1002px;
+    left: 1467px;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+}
+
+#bracket {
+    font-size: 20px;
+    width: 200px;
+    height: 25px;
+    top: 4px;
+    left: 830px;
+}
+
+#link {
+    font-size: 18px;
+    top: 10px;
+    left: 10px;
+}
+
+.color-change {
+    color: #36454f;
+}
+
+#logo {
+    position: absolute;
+    width: 150px;
+    content: url("./assets/Orbitar.png");
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
