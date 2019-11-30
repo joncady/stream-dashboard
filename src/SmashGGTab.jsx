@@ -11,7 +11,8 @@ export default class SmashGGTab extends Component {
             streamSets: null,
             time: null,
             loading: false,
-            errorMessage: null
+            errorMessage: null,
+            clicked: false
         }
     }
 
@@ -49,6 +50,14 @@ export default class SmashGGTab extends Component {
             client.call(this.props.values.smashGGLink).then((streams) => {
                 let setsToDisplay = [];
                 streams.forEach(stream => {
+                    if (stream && stream.stream && stream.stream.streamName) {
+                        setsToDisplay.push(
+                            <div>
+                                <h2 style={{ fontWeight: 'bold' }}>{stream.stream.streamName}</h2>
+                                <hr></hr>
+                            </div>
+                        );
+                    }
                     let sets = stream.sets.map((set, index) => {
                         let players = set.slots;
                         let finalArray = [];
@@ -60,12 +69,12 @@ export default class SmashGGTab extends Component {
                                 let id = playerObj.id;
                                 let playerEl = (<div key={gamerTag}>
                                     <span>{prefix ? `${prefix} | ${gamerTag}` : gamerTag}</span>
-                                    <Button className="player-space" onClick={() => this.updatePlayer("player1", gamerTag, prefix, twitter, id, fullRoundText)}>P1</Button>
-                                    <Button className="player-space" onClick={() => this.updatePlayer("player2", gamerTag, prefix, twitter, id, fullRoundText)}>P2</Button>
+                                    <Button className="player-space" onClick={() => { this.setState({ clicked: true }); this.updatePlayer("player1", gamerTag, prefix, twitter, id, fullRoundText); }}>P1</Button>
+                                    <Button className="player-space" onClick={() => { this.setState({ clicked: true }); this.updatePlayer("player2", gamerTag, prefix, twitter, id, fullRoundText); }}>P2</Button>
                                     {this.props.values.doubles &&
                                         <div style={{ display: 'inline' }}>
-                                            <Button className="player-space" onClick={() => { this.update("player3", name); this.update("bracket", fullRoundText); }}>P3</Button>
-                                            <Button className="player-space" onClick={() => { this.update("player4", name); this.update("bracket", fullRoundText); }}>P4</Button>
+                                            <Button className="player-space" onClick={() => { this.update("player3", name); this.setState({ clicked: true }); this.update("bracket", fullRoundText); }}>P3</Button>
+                                            <Button className="player-space" onClick={() => { this.update("player4", name); this.setState({ clicked: true }); this.update("bracket", fullRoundText); }}>P4</Button>
                                         </div>
                                     }
                                 </div>);
@@ -118,6 +127,9 @@ export default class SmashGGTab extends Component {
                         </Button>
                             {this.state.time &&
                                 <p style={{ marginTop: '0.5rem' }}><span>Last Run:</span> {this.state.time}</p>
+                            }
+                            {this.state.clicked &&
+                                <Alert color="info">Make sure to click the Update button on the Game page to update your players!</Alert>
                             }
                             {this.state.loading &&
                                 <div style={{ marginTop: '1rem' }}>

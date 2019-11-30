@@ -130,7 +130,7 @@ export default class App extends Component {
 			},
 			smashGGIds: {
 				player1Id: player1Id,
-				player12d: player2Id
+				player2Id: player2Id
 			}
 		}
 		settings.set('data', dataObj);
