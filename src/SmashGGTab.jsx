@@ -49,6 +49,7 @@ export default class SmashGGTab extends Component {
             let client = new SmashGGClient(this.props.values.apiKey);
             client.call(this.props.values.smashGGLink).then((streams) => {
                 let setsToDisplay = [];
+                console.log(streams)
                 streams.forEach(stream => {
                     if (stream && stream.stream && stream.stream.streamName) {
                         setsToDisplay.push(
@@ -64,21 +65,24 @@ export default class SmashGGTab extends Component {
                         let fullRoundText = set.fullRoundText;
                         players.forEach((player) => {
                             if (player.entrant && player.entrant.participants) {
-                                let { gamerTag, prefix, player: playerObj } = player.entrant.participants[0];
-                                let twitter = playerObj.twitterHandle;
-                                let id = playerObj.id;
-                                let playerEl = (<div key={gamerTag}>
-                                    <span>{prefix ? `${prefix} | ${gamerTag}` : gamerTag}</span>
-                                    <Button className="player-space" onClick={() => { this.setState({ clicked: true }); this.updatePlayer("player1", gamerTag, prefix, twitter, id, fullRoundText); }}>P1</Button>
-                                    <Button className="player-space" onClick={() => { this.setState({ clicked: true }); this.updatePlayer("player2", gamerTag, prefix, twitter, id, fullRoundText); }}>P2</Button>
-                                    {this.props.values.doubles &&
-                                        <div style={{ display: 'inline' }}>
-                                            <Button className="player-space" onClick={() => { this.update("player3", name); this.setState({ clicked: true }); this.update("bracket", fullRoundText); }}>P3</Button>
-                                            <Button className="player-space" onClick={() => { this.update("player4", name); this.setState({ clicked: true }); this.update("bracket", fullRoundText); }}>P4</Button>
-                                        </div>
-                                    }
-                                </div>);
-                                finalArray.push(playerEl);
+                                player.entrant.participants.forEach((participant) => {
+                                    let { gamerTag, prefix, player: playerObj } = participant;
+                                    let twitter = playerObj.user && playerObj.user.authorizations && playerObj.user.authorizations[0] && playerObj.user.authorizations[0].externalUsername;
+                                    let id = playerObj.id;
+                                    console.log()
+                                    let playerEl = (<div key={gamerTag}>
+                                        <span>{prefix ? `${prefix} | ${gamerTag}` : gamerTag}</span>
+                                        <Button className="player-space" onClick={() => { this.setState({ clicked: true }); this.updatePlayer("player1", gamerTag, prefix, twitter, id, fullRoundText); }}>P1</Button>
+                                        <Button className="player-space" onClick={() => { this.setState({ clicked: true }); this.updatePlayer("player2", gamerTag, prefix, twitter, id, fullRoundText); }}>P2</Button>
+                                        {this.props.values.doubles &&
+                                            <div style={{ display: 'inline' }}>
+                                                <Button className="player-space" onClick={() => { this.updatePlayer("player3", gamerTag, prefix, twitter, id, fullRoundText); this.setState({ clicked: true });}}>P3</Button>
+                                                <Button className="player-space" onClick={() => { this.updatePlayer("player4", gamerTag, prefix, twitter, id, fullRoundText); this.setState({ clicked: true });}}>P4</Button>
+                                            </div>
+                                        }
+                                    </div>);
+                                    finalArray.push(playerEl);
+                                })
                             }
                         });
                         return (

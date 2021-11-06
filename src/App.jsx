@@ -8,10 +8,10 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import TwitchTab from './TwitchTab';
 import SmashGGTab from './SmashGGTab';
 import BracketTab from './BracketTab';
+import OverlaysTab from './OverlaysTab';
 import bracketData from './startingBracket';
 const socket = io('http://localhost:8889');
 const { settings } = require('./renderer');
-
 
 export default class App extends Component {
 
@@ -74,7 +74,9 @@ export default class App extends Component {
 			twitchEnabled: false,
 			twitchLink: "",
 			color: "#343a40",
-			bracketData: bracketData
+			bracketData: bracketData,
+			overlaysPath: "",
+			overlays: []
 		}
 	}
 
@@ -140,6 +142,20 @@ export default class App extends Component {
 	emitBracketUpdate = () => {
 		settings.set('bracketData', this.state.bracketData);
 		socket.emit("updateBracket", this.state.bracketData);
+	}
+
+	updateOverlayPath = (overlaysPath) => {
+		settings.set('settings.overlaysPath', overlaysPath);
+		this.setState({
+			overlaysPath
+		});
+	}
+
+	updateOverlays = (overlays) => {
+		settings.set('settings.overlays', overlays);
+		this.setState({
+			overlays
+		});
 	}
 
 	resetBracket = () => {
@@ -222,6 +238,10 @@ export default class App extends Component {
 								Commentary
 							</Tab>
 							<Tab>
+								<i className="fas fa-headset" style={{ marginRight: '0.7rem' }}></i>
+								Overlays
+							</Tab>
+							<Tab>
 								<i className="fab fa-twitch" style={{ marginRight: '0.7rem' }}></i>
 								Twitch
 							</Tab>
@@ -244,6 +264,9 @@ export default class App extends Component {
 						</TabPanel>
 						<TabPanel>
 							<CommentaryTab change={this._onChange} values={this.state} update={this.update} swap={this.swapCommentators} />
+						</TabPanel>
+						<TabPanel>
+							<OverlaysTab values={this.state} update={this.updateOverlayPath} updateOverlays={this.updateOverlays} />
 						</TabPanel>
 						<TabPanel>
 							<TwitchTab values={this.state} />

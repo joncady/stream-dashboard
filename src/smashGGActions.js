@@ -37,8 +37,11 @@ Client.prototype.call = async (tournamentSlug) => {
                 entrant {
                   participants {
                     player {
-                      id
-                      twitterHandle
+                      user {
+                        authorizations(types: TWITTER) {
+                            externalUsername
+                        }
+                      }
                     }
                     prefix
                     gamerTag

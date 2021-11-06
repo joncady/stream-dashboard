@@ -8,7 +8,6 @@ const path = require('path');
 
 httpApp.use(express.static(path.join(__dirname, 'webclient')));
 
-
 const url = require('url');
 // const ipc = electron.ipcMain;
 let io;
@@ -18,6 +17,7 @@ let bracket;
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+let server;
 
 process.env.NODE_ENV = "production";
 
@@ -27,7 +27,7 @@ httpApp.get('/', (req, res) => {
 
 function createWindow() {
 
-    httpApp.listen(3030);
+    server = httpApp.listen(3030);
 
     io = require('socket.io').listen(8889);
 
@@ -49,7 +49,15 @@ function createWindow() {
     });
 
     // Create the browser window.
-    mainWindow = new BrowserWindow({ width: 800, height: 700, minWidth: 500, minHeight: 300, webPreferences: { webSecurity: false } });
+    mainWindow = new BrowserWindow({
+        width: 800, height: 700, minWidth: 500, minHeight: 300, webPreferences: {
+            webSecurity: false,
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+            nativeWindowOpen: true 
+        }
+    });
 
     // and load the index.html of the app.
     const startUrl = process.env.ELECTRON_START_URL || url.format({
@@ -69,6 +77,8 @@ function createWindow() {
         // when you should delete the corresponding element.
         mainWindow = null
         app.exit();
+        server.close();
+        io.close();
     })
 }
 
@@ -83,6 +93,8 @@ app.on('window-all-closed', function () {
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
         app.quit()
+        server.close();
+        io.close();
     }
 });
 
