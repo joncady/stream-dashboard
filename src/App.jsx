@@ -238,7 +238,7 @@ export default class App extends Component {
 								Commentary
 							</Tab>
 							<Tab>
-								<i className="fas fa-headset" style={{ marginRight: '0.7rem' }}></i>
+								<i className="fas fa-window-maximize" style={{ marginRight: '0.7rem' }}></i>
 								Overlays
 							</Tab>
 							<Tab>

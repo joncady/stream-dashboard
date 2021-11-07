@@ -16,7 +16,7 @@ export const createComponent = (type) => {
                 },
                 components: [{
                     type: 'textnode',
-                    content: 'Hello world!!!'
+                    content: ''
                 }],
                 style: {
                     width: '100px',
@@ -32,12 +32,11 @@ export const createBlock = (name) => {
         id: name,
         label: name,
         media: ``,
-        content: `<div id="${name}" data-gjs-type="text">${name}</div>`,
-        // The component `image` is activatable (shows the Asset Manager).
-        // We want to activate it once dropped in the canvas.
+        content: `<div id="${name}" data-gjs-type="text">${name}</div>`
     }
 }
 
+// Injects HTML with necessary JS files for stream dashboard (jquery, socket.io), plus adds in CSS file
 export const transformHtml = (name, body) => {
     return `
     <!DOCTYPE html>
@@ -45,10 +44,10 @@ export const transformHtml = (name, body) => {
         <head>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
             <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-            <link href="./${name}.css" rel="stylesheet">
+            ${!body.includes(name + ".css") && `<link href="./${name}.css" rel="stylesheet"></link>`}
             <!-- inject dashboard js-->
             <script>
-            let firstTime = true;
+                let firstTime = true;
 
                 const socket = io.connect('http://localhost:8889', { reconnection: true, reconnectionDelay: 1000 });
                 socket.on('update', function (data) {
@@ -59,7 +58,7 @@ export const transformHtml = (name, body) => {
                             setContent(data.commInfo)
                         }, 1000);
                     } else {
-                        gameStuff(data.gameInfo);
+                        setContent(data.gameInfo);
                     }
                 })
                 

@@ -121,3 +121,18 @@ input:hover[type="text"] {
 .shortened {
   width: 100px;
 }
+
+.gjs-editor {
+  /* height: 300px; */
+  /* max-height: inherit; */
+  height: calc(100% - 150px);
+}
+
+#test {
+  height: 100%;
+  /* display: flex; */
+  /* justify-content: ce; */
+  /* overflow-y: auto;
+  height: calc(100% - 20px);
+  max-height: inherit; */
+}

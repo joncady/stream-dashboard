@@ -9,10 +9,10 @@ import { options, starterHtml } from './constants/dashboard';
 import { createComponent, createBlock, transformHtml } from './helpers/overlayhelper';
 
 const myNewComponentTypes = editor => {
-    options.forEach((option) => editor.Components.addType(option, createComponent(option)))    
+    options.forEach((option) => editor.Components.addType(option, createComponent(option)))
 };
 
-const blocks = options.map((option) => createBlock(option)); 
+const blocks = options.map((option) => createBlock(option));
 
 export default class OverlaysTab extends Component {
 
@@ -49,9 +49,12 @@ export default class OverlaysTab extends Component {
     }
 
     clickOverlayButton = (selectedOverlay) => {
-        console.log(selectedOverlay)
         let file = fs.readFileSync(selectedOverlay.filePath, { encoding: 'utf8', flag: 'r' });
         let cssFile = fs.readFileSync(selectedOverlay.cssFilePath, { encoding: 'utf8', flag: 'r' });
+        if (this.editor) {
+            this.editor.setComponents(file);
+            this.editor.setStyle(cssFile);
+        }
         if (!this.state.opened) {
             this.setState({
                 opened: true,
@@ -59,7 +62,7 @@ export default class OverlaysTab extends Component {
                 style: cssFile,
                 filePath: selectedOverlay.filePath,
                 cssFilePath: selectedOverlay.cssFilePath,
-                name: selectedOverlay.name 
+                name: selectedOverlay.name
             })
         } else {
             this.setState({
@@ -67,7 +70,7 @@ export default class OverlaysTab extends Component {
                 style: cssFile,
                 filePath: selectedOverlay.filePath,
                 cssFilePath: selectedOverlay.cssFilePath,
-                name: selectedOverlay.name 
+                name: selectedOverlay.name
             })
         }
     }
@@ -80,6 +83,11 @@ export default class OverlaysTab extends Component {
 
         fs.outputFileSync(this.state.filePath, outputHtml, {});
         fs.outputFileSync(this.state.cssFilePath, css, {})
+    }
+
+    deleteOverlay = (name) => {
+        let overlays = this.props.values.overlays.filter((overlay) => overlay.name !== name);
+        this.props.updateOverlays(overlays);
     }
 
     choosePath = () => {
@@ -99,33 +107,46 @@ export default class OverlaysTab extends Component {
 
         return (
             <div className="tab-spacing" style={{ height: "80vh" }}>
-                <input type="text" onChange={(event) => this.setState({ text: event.target.value })} value={this.state.text}></input>
-                <Button onClick={this.addOverlay}>Add Overlay</Button>
-                <Button onClick={this.saveOverlay}>Save</Button>
+                <div>
+                    <label>Choose output directory</label>
+                    <Button onClick={this.choosePath}>Choose</Button>
+                    &nbsp;{overlaysPath}
+                </div>
 
-                {this.props.values.overlays.map(overlay => <Button key={overlay.name} onClick={() => this.clickOverlayButton(overlay)}>{overlay.name}</Button>)}
-                <label>Choose output directory</label>
-                <Button onClick={this.choosePath}>Choose</Button>
-                &nbsp;{overlaysPath}
+                <div style={{ margin: '5px', display: 'flex', justifyContent: 'space-between' }}>
+                    <div>
+                        <input type="text" onChange={(event) => this.setState({ text: event.target.value })} value={this.state.text}></input>
+                        <Button onClick={this.addOverlay}>Add Overlay</Button>
+                    </div>
+                    <Button onClick={this.saveOverlay} color="primary">Save</Button>
+                </div>
+                <div style={{ overflowX: "auto", whiteSpace: 'nowrap' }}>
+                    {this.props.values.overlays.map(overlay => {
+                        return (
+                            <div key={overlay.name} style={{ display: 'inline-block', margin: '5px' }}>
+                                <Button onClick={() => this.clickOverlayButton(overlay)}>{overlay.name}</Button>
+                                <Button onClick={() => this.deleteOverlay(overlay.name)} color="danger">X</Button>
+                            </div>
+                        )
+                    })}
+                </div>
+
                 {this.state.opened &&
-                    <div style={{ height: "100%", width: "100%" }}>
-                        <GrapesjsReact plugins={[
-                            'gjs-blocks-basic',
-                            myNewComponentTypes
-                        ]} id="test" dragMode="absolute"
-                        
-                        blockManager={{ blocks }}
-                        onInit={(editor) => {
-                            this.editor = editor;
+                    <div style={{ height: "100%", width: "100%", overflow: "auto!important" }}>
+                        <GrapesjsReact
+                            id="test"
+                            plugins={[
+                                myNewComponentTypes,
+                                'gjs-blocks-basic'
+                            ]}
+                            dragMode="absolute"
+                            blockManager={{ blocks }}
+                            onInit={(editor) => {
+                                this.editor = editor;
 
-                            editor.setComponents(this.state.overlay)
-                        }} height={"100%"}>
-                            {/* import CSS */}
-                            <style>
-                                {this.state.style}
-                            </style>
-                            {/* import HTML */}
-                            {this.state.overlay}
+                                this.editor.setComponents(this.state.overlay);
+                                this.editor.setStyle(this.state.style);
+                            }} height={"100%"}>
                         </GrapesjsReact>
                     </div>
                 }
