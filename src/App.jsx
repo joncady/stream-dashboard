@@ -6,7 +6,7 @@ import ChallongeTab from './ChallongeTab';
 import io from 'socket.io-client';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import TwitchTab from './TwitchTab';
-import SmashGGTab from './SmashGGTab';
+import StartGGTab from './StartGGTab';
 import BracketTab from './BracketTab';
 import OverlaysTab from './OverlaysTab';
 import bracketData from './startingBracket';
@@ -28,7 +28,7 @@ export default class App extends Component {
 			this.setState({
 				...scoreboardValues.gameInfo,
 				...scoreboardValues.commInfo,
-				...scoreboardValues.smashGGIds
+				...scoreboardValues.startGGIds
 			})
 		}
 		if (bracketData) {
@@ -47,10 +47,14 @@ export default class App extends Component {
 		this.state = {
 			player1: "",
 			player1Id: "",
+			player1Pronouns: "",
 			player2: "",
 			player2Id: "",
+			player2Pronouns: "",
 			player3: "",
+			player3Pronouns: "",
 			player4: "",
+			player4Pronouns: "",
 			twitter1: "",
 			twitter2: "",
 			sponsor1: "",
@@ -69,8 +73,8 @@ export default class App extends Component {
 			commTwitter2: "",
 			challongeEnabled: false,
 			challongeLink: "",
-			smashGGEnabled: false,
-			smashGGLink: "",
+			startGGEnabled: false,
+			startGGLink: "",
 			twitchEnabled: false,
 			twitchLink: "",
 			color: "#343a40",
@@ -83,10 +87,12 @@ export default class App extends Component {
 	update = () => {
 		let {
 			player1,
+			player1Pronouns,
 			player1Id,
 			sponsor1,
 			twitter1,
 			player2,
+			player2Pronouns,
 			player2Id,
 			sponsor2,
 			twitter2,
@@ -108,9 +114,11 @@ export default class App extends Component {
 		let dataObj = {
 			gameInfo: {
 				player1: player1,
+				player1Pronouns: player1Pronouns,
 				sponsor1: sponsor1,
 				twitter1: twitter1,
 				player2: player2,
+				player2Pronouns: player2Pronouns,
 				sponsor2: sponsor2,
 				twitter2: twitter2,
 				score1: String(score1),
@@ -130,7 +138,7 @@ export default class App extends Component {
 				commName2: commName2,
 				commTwitter2: commTwitter2
 			},
-			smashGGIds: {
+			startGGIds: {
 				player1Id: player1Id,
 				player2Id: player2Id
 			}
@@ -178,15 +186,17 @@ export default class App extends Component {
 
 	swap = () => {
 		let {
-			player1, sponsor1, twitter1, score1, player3,
-			player2, sponsor2, twitter2, score2, player4
+			player1, player1Pronouns, sponsor1, twitter1, score1, player3,
+			player2, player2Pronouns, sponsor2, twitter2, score2, player4
 		} = this.state;
 		this.setState({
 			player1: player2,
 			sponsor1: sponsor2,
+			player1Pronouns: player2Pronouns,
 			twitter1: twitter2,
 			score1: score2,
 			player2: player1,
+			player2Pronouns: player1Pronouns,
 			sponsor2: sponsor1,
 			twitter2: twitter1,
 			score2: score1,
@@ -249,7 +259,7 @@ export default class App extends Component {
 								Challonge
 							</Tab>
 							<Tab>
-								smash.gg
+								start.gg
 							</Tab>
 							<Tab>
 								Stream Bracket
@@ -275,7 +285,7 @@ export default class App extends Component {
 							<ChallongeTab values={this.state} />
 						</TabPanel>
 						<TabPanel>
-							<SmashGGTab values={this.state} change={this._onChange} />
+							<StartGGTab values={this.state} change={this._onChange} />
 						</TabPanel>
 						<TabPanel>
 							<BracketTab bracketData={this.state.bracketData} bracketChange={this.bracketChange} resetBracket={this.resetBracket} updateBracket={this.emitBracketUpdate}></BracketTab>

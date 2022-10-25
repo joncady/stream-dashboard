@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Button, Alert } from 'reactstrap';
-const SmashGGClient = require('./smashGGActions');
+const StartGGClient = require('./startGGActions');
 
 
-export default class SmashGGTab extends Component {
+export default class StartGGTab extends Component {
 
     constructor(props) {
         super(props);
@@ -16,7 +16,7 @@ export default class SmashGGTab extends Component {
         }
     }
 
-    updatePlayer = (type, value, prefix, twitter, smashGGId, bracketLocation) => {
+    updatePlayer = (type, value, prefix, genderPronoun, twitter, startGGId, bracketLocation) => {
         this.update(type, value);
         this.update("bracket", bracketLocation);
         if (prefix) {
@@ -29,10 +29,27 @@ export default class SmashGGTab extends Component {
         } else {
             this.update(type.includes("1") ? "twitter1" : "twitter2", "");
         }
-        if (smashGGId) {
-            this.update(type.includes("1") ? "player1Id" : "player2Id", smashGGId);
+        if (startGGId) {
+            this.update(type.includes("1") ? "player1Id" : "player2Id", startGGId);
         } else {
             this.update(type.includes("1") ? "player1Id" : "player2Id", "");
+        }
+        console.log(type, genderPronoun)
+        switch (type) {
+            case "player1":
+                this.update("player1Pronouns", genderPronoun)
+                break;
+            case "player2":
+                this.update("player2Pronouns", genderPronoun)
+                break;
+            case "player3":
+                this.update("player3Pronouns", genderPronoun)
+                break;
+            case "player4":
+                this.update("player4Pronouns", genderPronoun)
+                break;
+            default:
+                break;
         }
     }
 
@@ -46,8 +63,8 @@ export default class SmashGGTab extends Component {
             streamSets: null
         });
         try {
-            let client = new SmashGGClient(this.props.values.apiKey);
-            client.call(this.props.values.smashGGLink).then((streams) => {
+            let client = new StartGGClient(this.props.values.apiKey);
+            client.call(this.props.values.startGGLink).then((streams) => {
                 let setsToDisplay = [];
                 console.log(streams)
                 streams.forEach(stream => {
@@ -69,15 +86,15 @@ export default class SmashGGTab extends Component {
                                     let { gamerTag, prefix, player: playerObj } = participant;
                                     let twitter = playerObj.user && playerObj.user.authorizations && playerObj.user.authorizations[0] && playerObj.user.authorizations[0].externalUsername;
                                     let id = playerObj.id;
-                                    console.log()
+                                    let genderPronoun = playerObj.user && playerObj.user.genderPronoun || "";
                                     let playerEl = (<div key={gamerTag}>
                                         <span>{prefix ? `${prefix} | ${gamerTag}` : gamerTag}</span>
-                                        <Button className="player-space" onClick={() => { this.setState({ clicked: true }); this.updatePlayer("player1", gamerTag, prefix, twitter, id, fullRoundText); }}>P1</Button>
-                                        <Button className="player-space" onClick={() => { this.setState({ clicked: true }); this.updatePlayer("player2", gamerTag, prefix, twitter, id, fullRoundText); }}>P2</Button>
+                                        <Button className="player-space" onClick={() => { this.setState({ clicked: true }); this.updatePlayer("player1", gamerTag, prefix, genderPronoun, twitter, id, fullRoundText); }}>P1</Button>
+                                        <Button className="player-space" onClick={() => { this.setState({ clicked: true }); this.updatePlayer("player2", gamerTag, prefix, genderPronoun, twitter, id, fullRoundText); }}>P2</Button>
                                         {this.props.values.doubles &&
                                             <div style={{ display: 'inline' }}>
-                                                <Button className="player-space" onClick={() => { this.updatePlayer("player3", gamerTag, prefix, twitter, id, fullRoundText); this.setState({ clicked: true });}}>P3</Button>
-                                                <Button className="player-space" onClick={() => { this.updatePlayer("player4", gamerTag, prefix, twitter, id, fullRoundText); this.setState({ clicked: true });}}>P4</Button>
+                                                <Button className="player-space" onClick={() => { this.updatePlayer("player3", gamerTag, prefix, genderPronoun, twitter, id, fullRoundText); this.setState({ clicked: true });}}>P3</Button>
+                                                <Button className="player-space" onClick={() => { this.updatePlayer("player4", gamerTag, prefix, genderPronoun, twitter, id, fullRoundText); this.setState({ clicked: true });}}>P4</Button>
                                             </div>
                                         }
                                     </div>);
@@ -119,11 +136,11 @@ export default class SmashGGTab extends Component {
     }
 
     render() {
-        let { smashGGEnabled, smashGGLink } = this.props.values;
+        let { startGGEnabled, startGGLink } = this.props.values;
         return (
             <div className="tab-spacing">
-                {smashGGEnabled ?
-                    smashGGLink ?
+                {startGGEnabled ?
+                    startGGLink ?
                         <div style={{ textAlign: 'center' }}>
                             <Button onClick={this.getSets}>
                                 <i className="fas fa-sync-alt" style={{ marginRight: '0.7rem' }} />
@@ -151,12 +168,12 @@ export default class SmashGGTab extends Component {
                         :
                         <div className="set-link">
                             <i className="fas fa-exclamation-circle fa-2x" style={{ marginBottom: '1rem' }} />
-                            <p>Make sure you set the link and API key for smash.gg!</p>
+                            <p>Make sure you set the link and API key for start.gg!</p>
                         </div>
                     :
                     <div className="set-link">
                         <i className="fas fa-exclamation-circle fa-2x" style={{ marginBottom: '1rem' }} />
-                        <p>Head to settings to enable smash.gg support and set the link and API key!</p>
+                        <p>Head to settings to enable start.gg support and set the link and API key!</p>
                     </div>
                 }
             </div>

@@ -44,7 +44,7 @@ export const transformHtml = (name, body) => {
         <head>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
             <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-            ${!body.includes(name + ".css") && `<link href="./${name}.css" rel="stylesheet"></link>`}
+            ${!body.includes(name + ".css") ? `<link href="./${name}.css" rel="stylesheet"></link>` : ""}
             <!-- inject dashboard js-->
             <script>
                 let firstTime = true;

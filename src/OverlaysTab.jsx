@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import { Button, Alert } from 'reactstrap';
 import { GrapesjsReact } from 'grapesjs-react'
 import "grapesjs/dist/css/grapes.min.css";
 import 'grapesjs-blocks-basic';
@@ -26,7 +26,9 @@ export default class OverlaysTab extends Component {
             style: "",
             filePath: "",
             cssFilePath: "",
-            name: ""
+            name: "",
+            message: "",
+            error: ""
         }
     }
 
@@ -49,28 +51,41 @@ export default class OverlaysTab extends Component {
     }
 
     clickOverlayButton = (selectedOverlay) => {
-        let file = fs.readFileSync(selectedOverlay.filePath, { encoding: 'utf8', flag: 'r' });
-        let cssFile = fs.readFileSync(selectedOverlay.cssFilePath, { encoding: 'utf8', flag: 'r' });
-        if (this.editor) {
-            this.editor.setComponents(file);
-            this.editor.setStyle(cssFile);
-        }
-        if (!this.state.opened) {
+        try {
+            let file = fs.readFileSync(selectedOverlay.filePath, { encoding: 'utf8', flag: 'r' });
+            let cssFile = fs.readFileSync(selectedOverlay.cssFilePath, { encoding: 'utf8', flag: 'r' });
+            if (this.editor) {
+                this.editor.setComponents(file);
+                this.editor.setStyle(cssFile);
+                this.editor.setDragMode("absolute")
+            }
+            if (!this.state.opened) {
+                this.setState({
+                    opened: true,
+                    overlay: file,
+                    style: cssFile,
+                    filePath: selectedOverlay.filePath,
+                    cssFilePath: selectedOverlay.cssFilePath,
+                    name: selectedOverlay.name
+                })
+            } else {
+                this.setState({
+                    overlay: file,
+                    style: cssFile,
+                    filePath: selectedOverlay.filePath,
+                    cssFilePath: selectedOverlay.cssFilePath,
+                    name: selectedOverlay.name
+                })
+            }
+        } catch (err) {
             this.setState({
-                opened: true,
-                overlay: file,
-                style: cssFile,
-                filePath: selectedOverlay.filePath,
-                cssFilePath: selectedOverlay.cssFilePath,
-                name: selectedOverlay.name
-            })
-        } else {
-            this.setState({
-                overlay: file,
-                style: cssFile,
-                filePath: selectedOverlay.filePath,
-                cssFilePath: selectedOverlay.cssFilePath,
-                name: selectedOverlay.name
+                error: "Overlay files not found."
+            }, () => {
+                setTimeout(() => {
+                    this.setState({
+                        error: ""
+                    })
+                }, 3000)
             })
         }
     }
@@ -82,7 +97,17 @@ export default class OverlaysTab extends Component {
         let outputHtml = transformHtml(this.state.name, html);
 
         fs.outputFileSync(this.state.filePath, outputHtml, {});
-        fs.outputFileSync(this.state.cssFilePath, css, {})
+        fs.outputFileSync(this.state.cssFilePath, css, {});
+
+        this.setState({
+            message: "Overlay saved."
+        }, () => {
+            setTimeout(() => {
+                this.setState({
+                    message: ""
+                });
+            }, 5000)
+        });
     }
 
     deleteOverlay = (name) => {
@@ -118,13 +143,19 @@ export default class OverlaysTab extends Component {
                         <input type="text" onChange={(event) => this.setState({ text: event.target.value })} value={this.state.text}></input>
                         <Button onClick={this.addOverlay}>Add Overlay</Button>
                     </div>
+                    {this.state.message &&
+                        <Alert color="success">{this.state.message}</Alert>
+                    }
+                    {this.state.error &&
+                        <Alert color="danger">{this.state.error}</Alert>
+                    }
                     <Button onClick={this.saveOverlay} color="primary">Save</Button>
                 </div>
                 <div style={{ overflowX: "auto", whiteSpace: 'nowrap' }}>
                     {this.props.values.overlays.map(overlay => {
                         return (
                             <div key={overlay.name} style={{ display: 'inline-block', margin: '5px' }}>
-                                <Button onClick={() => this.clickOverlayButton(overlay)}>{overlay.name}</Button>
+                                <Button onClick={() => this.clickOverlayButton(overlay)} color={(this.state.name && this.state.name === overlay.name) ? "primary" : "secondary"}>{overlay.name}</Button>
                                 <Button onClick={() => this.deleteOverlay(overlay.name)} color="danger">X</Button>
                             </div>
                         )
@@ -134,19 +165,59 @@ export default class OverlaysTab extends Component {
                 {this.state.opened &&
                     <div style={{ height: "100%", width: "100%", overflow: "auto!important" }}>
                         <GrapesjsReact
-                            id="test"
+                            id="gjs"
                             plugins={[
                                 myNewComponentTypes,
                                 'gjs-blocks-basic'
                             ]}
                             dragMode="absolute"
                             blockManager={{ blocks }}
+                            devices={[
+                                {
+                                    id: '720',
+                                    name: '720p size',
+                                    width: '1280px', // This width will be applied on the canvas frame and for the CSS media
+                                    height: "720px"
+                                }
+                            ]}
                             onInit={(editor) => {
                                 this.editor = editor;
 
+                                let canvas = this.editor.Canvas;
+                                canvas.setZoom(70)
+                            
+                                // Below code is untest:
+                                // {
+                                //     name: '1080p size',
+                                //     width: '1920px', // This width will be applied on the canvas frame and for the CSS media
+                                //     height: "1080px"
+                                // }
+                                // let dm = editor.Devices;
+                                // dm.add({
+                                //     id: '720',
+                                //     name: '720p size',
+                                //     width: '1280px', // This width will be applied on the canvas frame and for the CSS media
+                                //     height: "720px"
+                                // })
+
+                                // dm.select('720')
+
                                 this.editor.setComponents(this.state.overlay);
                                 this.editor.setStyle(this.state.style);
-                            }} height={"100%"}>
+
+                                editor.on("device:select", function (model) {
+                                    editor.setDragMode("absolute")
+                                    console.log(editor.getConfig())
+                                })
+
+                                editor.refresh()
+                                // this.editor.on("component:selected", (el) => {
+                                //     console.log(el)
+                                //     canvas.scrollTo(el, { behavior: 'smooth', block: "end" });
+                                // })
+                                // canvas.scrollTo(editor.DomComponents.getWrapper().find('body'), { force: true, behavior: "smooth", block: "center", inline: "center" })
+                                // console.log(editor.DomComponents.getWrapper())
+}} height={"100%"}>
                         </GrapesjsReact>
                     </div>
                 }

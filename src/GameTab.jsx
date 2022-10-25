@@ -27,7 +27,7 @@ export default class GameTab extends Component {
     }
 
     render() {
-        let { player1, player2, player3, player4, score1, score2, bracket, link,
+        let { player1, player1Pronouns, player2, player2Pronouns, player3, player3Pronouns, player4, player4Pronouns, score1, score2, bracket, link,
             date, location, doubles, twitter1, twitter2, useTwitters, sponsor1, sponsor2 } = this.props.values;
         return (
             <div className="tab-spacing">
@@ -48,6 +48,13 @@ export default class GameTab extends Component {
                                     autoComplete="off" />
                             </div>
                         </div>
+                        <div className="form-group">
+                            <label htmlFor="player1Pronouns">P1 Pronouns</label>
+                            <Input id="player1Pronouns" style={{ width: doubles ? "130px" : "155px" }} value={player1Pronouns} onChange={(e) => this._onChange("player1Pronouns", e.target.value)}
+                                draggable={true} type="text" onDragStart={this.drag}
+                                onDrop={this.drop} onDragOver={this.allowDrop} placeholder="P1 Pronouns"
+                                autoComplete="off" />
+                        </div>
                         {!doubles &&
                             <div className="form-group">
                                 <label htmlFor="twitter1">Player 1 Twitter</label>
@@ -58,13 +65,22 @@ export default class GameTab extends Component {
                             </div>
                         }
                         {doubles &&
-                            <div className="form-group">
-                                <label className="left" htmlFor="player3">Player 3</label>
-                                <Input id="player3" value={player3}
-                                    draggable={true} type="text" onDragStart={this.drag}
-                                    onDrop={this.drop} onDragOver={this.allowDrop} placeholder="Player 3 Tag"
-                                    autoComplete="off" onChange={(e) => this._onChange("player3", e.target.value)} />
-                            </div>
+                            <React.Fragment>
+                                <div className="form-group">
+                                    <label className="left" htmlFor="player3">Player 3</label>
+                                    <Input id="player3" value={player3}
+                                        draggable={true} type="text" onDragStart={this.drag}
+                                        onDrop={this.drop} onDragOver={this.allowDrop} placeholder="Player 3 Tag"
+                                        autoComplete="off" onChange={(e) => this._onChange("player3", e.target.value)} />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="player3Pronouns">P3 Pronouns</label>
+                                    <Input id="player3Pronouns" style={{ width: doubles ? "130px" : "155px" }} value={player3Pronouns} onChange={(e) => this._onChange("player3Pronouns", e.target.value)}
+                                        draggable={true} type="text" onDragStart={this.drag}
+                                        onDrop={this.drop} onDragOver={this.allowDrop} placeholder="P3 Pronouns"
+                                        autoComplete="off" />
+                                </div>
+                            </React.Fragment>
                         }
                         <div className="form-group">
                             <label className="left">Score 1</label>
@@ -86,6 +102,13 @@ export default class GameTab extends Component {
                                     value={player2} />
                             </div>
                         </div>
+                        <div className="form-group">
+                            <label htmlFor="playerPronouns">P2 Pronouns</label>
+                            <Input id="player2Pronouns" style={{ width: doubles ? "130px" : "155px" }} value={player2Pronouns} onChange={(e) => this._onChange("player2Pronouns", e.target.value)}
+                                draggable={true} type="text" onDragStart={this.drag}
+                                onDrop={this.drop} onDragOver={this.allowDrop} placeholder="P2 Pronouns"
+                                autoComplete="off" />
+                        </div>
                         {!doubles &&
                             <div className="form-group">
                                 <label htmlFor="twitter2">Player 2 Twitter</label>
@@ -96,13 +119,22 @@ export default class GameTab extends Component {
                             </div>
                         }
                         {doubles &&
-                            <div className="form-group">
-                                <label htmlFor="exampleInputPassword4" className="left">Player 4</label>
-                                <Input id="player4" draggable={true} type="text" onDragStart={this.drag}
-                                    onDrop={this.drop} onDragOver={this.allowDrop} placeholder="Player 4 Tag"
-                                    autoComplete="off" onChange={(e) => this._onChange("player4", e.target.value)}
-                                    value={player4} />
-                            </div>
+                            <React.Fragment>
+                                <div className="form-group">
+                                    <label htmlFor="exampleInputPassword4" className="left">Player 4</label>
+                                    <Input id="player4" draggable={true} type="text" onDragStart={this.drag}
+                                        onDrop={this.drop} onDragOver={this.allowDrop} placeholder="Player 4 Tag"
+                                        autoComplete="off" onChange={(e) => this._onChange("player4", e.target.value)}
+                                        value={player4} />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="player4Pronouns">P4 Pronouns</label>
+                                    <Input id="player4Pronouns" style={{ width: doubles ? "130px" : "155px" }} value={player4Pronouns} onChange={(e) => this._onChange("player4Pronouns", e.target.value)}
+                                        draggable={true} type="text" onDragStart={this.drag}
+                                        onDrop={this.drop} onDragOver={this.allowDrop} placeholder="P4 Pronouns"
+                                        autoComplete="off" />
+                                </div>
+                            </React.Fragment>
                         }
                         <div className="form-group">
                             <label className="left">Score 2</label>
@@ -153,7 +185,7 @@ export default class GameTab extends Component {
                     <button type="button" className="btn btn-primary" onClick={this.props.update} id="update">
                         <i className="fas fa-check-square" style={{ marginRight: '0.7rem' }}></i>
                         Update!
-                </button>
+                    </button>
                 </div>
             </div>
         );

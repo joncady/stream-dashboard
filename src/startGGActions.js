@@ -1,6 +1,6 @@
 var graphql_request_1 = require("graphql-request");
 
-const API_URL = "https://api.smash.gg/gql/alpha";
+const API_URL = "https://api.start.gg/gql/alpha";
 let instance;
 
 class Client {
@@ -9,7 +9,6 @@ class Client {
         if (!api) throw new Error("API Key required to initialize client!");
         const headers = {
             headers: {
-                'X-Source': 'smashgg.js',
                 'Content-Type': 'application/json',
                 'Authorization': "Bearer " + api
             }
@@ -41,6 +40,7 @@ Client.prototype.call = async (tournamentSlug) => {
                         authorizations(types: TWITTER) {
                             externalUsername
                         }
+                        genderPronoun
                       }
                     }
                     prefix

@@ -9,11 +9,11 @@ export default class SettingsModal extends Component {
         this.state = {
             twitchText: "",
             challongeText: "",
-            smashGGText: "",
+            startGGText: "",
             apiKey: "",
             confirmTwitch: false,
             confirmChallonge: false,
-            confirmSmashGG: false,
+            confirmStartGG: false,
             confirmAPI: false
         }
     }
@@ -22,7 +22,7 @@ export default class SettingsModal extends Component {
         this.setState({
             twitchText: this.props.values.twitchLink,
             challongeText: this.props.values.challongeLink,
-            smashGGText: this.props.values.smashGGLink,
+            startGGText: this.props.values.startGGLink,
             apiKey: this.props.values.apiKey
         });
     }
@@ -33,11 +33,11 @@ export default class SettingsModal extends Component {
     }
 
     confirmLink = (type, confirm) => {
-        if (type === "smashGG") {
+        if (type === "startGG") {
             this._onChange("apiKey", this.state.apiKey);
-            this._onChange('smashGGLink', this.state.smashGGText);
+            this._onChange('startGGLink', this.state.startGGText);
             this.setState({
-                confirmSmashGG: true,
+                confirmStartGG: true,
                 confirmAPI: true
             });
         } else {
@@ -54,7 +54,7 @@ export default class SettingsModal extends Component {
 
     render() {
         let { challongeEnabled,
-            smashGGEnabled,
+            startGGEnabled,
             twitchEnabled,
             color
         } = this.props.values;
@@ -97,16 +97,16 @@ export default class SettingsModal extends Component {
                         <hr></hr>
                         <Row>
                             <Col>
-                                <CustomInput id="smashGGSwitch" checked={smashGGEnabled} type="switch" name="smashGG" label="Smash.gg Enabled" onChange={() => this._onChange("smashGGEnabled", !smashGGEnabled)} />
+                                <CustomInput id="smartGGSwitch" checked={startGGEnabled} type="switch" name="startGG" label="Start.gg Enabled" onChange={() => this._onChange("startGGEnabled", !startGGEnabled)} />
                             </Col>
                             <Col>
-                                {smashGGEnabled &&
+                                {startGGEnabled &&
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <div style={{ width: "100%" }}>
-                                            <Input type="text" placeholder="smash.gg Link" valid={this.state.confirmSmashGG} value={this.state.smashGGText} onChange={(ev) => this.setState({ smashGGText: ev.target.value })} style={{ height: "100%" }} />
+                                            <Input type="text" placeholder="start.gg Link" valid={this.state.confirmStartGG} value={this.state.startGGText} onChange={(ev) => this.setState({ startGGText: ev.target.value })} style={{ height: "100%" }} />
                                             <Input placeholder="API Key" type="password" valid={this.state.confirmAPI} defaultValue={this.state.apiKey} value={this.state.apiKey} onChange={(ev) => this.setState({ apiKey: ev.target.value })} />
                                         </div>
-                                        <Button onClick={() => this.confirmLink("smashGG", "SmashGG")}>
+                                        <Button onClick={() => this.confirmLink("startGG", "StartGG")}>
                                             <i className="fas fa-check-circle fa-xs" />
                                         </Button>
                                     </div>}
