@@ -21,10 +21,11 @@
       "node_modules/**/*"
     ],
     "mac": {
-      "category": "com.satellitesmash.streamdashboard"
+      "category": "com.satellitesmash.streamdashboard",
+      "target": "dmg"
     },
     "win": {
-      "target": "portable"
+      "target": "nsis"
     }
   },
   "dependencies": {
@@ -62,7 +63,7 @@
     "electron-start": "node src/electron-wait-react",
     "react-start": "react-scripts start",
     "dist": "electron-builder",
-    "dist-all": "electron-builder -mw"
+    "dist-win": "electron-builder --win --x64"
   },
   "browserslist": {
     "production": [
