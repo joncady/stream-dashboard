@@ -35,7 +35,7 @@
     "bootstrap": "^4.6.0",
     "electron-settings": "^3.2.0",
     "electron-store": "^8.0.1",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "fs-extra": "^10.0.0",
     "grapesjs": "^0.17.29",
     "grapesjs-blocks-basic": "^0.1.8",
